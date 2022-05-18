@@ -26,7 +26,21 @@ def decrypt(string):
             response = string.split(",")
             x = int(float(response[0][1:]))
             y = int(float(response[1][:-1]))
-            return 0,[x,y]
+	    signX = 1
+	    signY = 1
+            if x > 180 :
+		x = x - 360
+		signX = -1
+       	    if y > 180 :
+		y = y - 360
+		signY = -1
+            x = x*4
+            y = y*4
+	    if abs(x)>180:
+  		x = 180*signX
+ 	    if abs(y)>180:
+		y = 180*-1*signY
+            return 0,[y,x]
         elif string[0] == "?" :
             angle = float(string[1:])*math.pi/180
             y = int(math.sin(angle) * 180)
@@ -83,6 +97,7 @@ while True:
     response = client.recv(255)
     if response != "":
         command = response.decode()
+	print(command)
         state, data = decrypt(command)
         if state == 0:
             speed,newpreviousFl, newpreviousBr = speedmotor(data,pallier,previousFl, previousBr)
